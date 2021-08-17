@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokeDex</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body onload="init()">
+
+    <div class="main-container">
+        <div class="main-header">
+            <div class="headline-main flex">
+                <h1 class="flex">P<img class="img-pokeball" src="img/pokeball.svg">kédex</h1>
+            </div>
+            <div>
+                <input onkeyup="filterPokemons()" class="search-box" id="search-box" placeholder="Search Pokemon">
+            </div>
+        </div>
+        <div class="all-pokemon-container" id="all-pokemon-container">
+        </div>
+    </div>
+
+    <div id="overlay" class="overlay d-none">
+        <div id="pokemon-background" class="pokemon-background">
+            <div class="pokemon-header">
+                <div class="button-back">
+                    <img onclick="closeOverlay()" src="img/left-arrow.png">
+                </div>
+    
+                <div id="pokemon">
+                    <h1 id="pokemonName">Name</h1>
+                </div>
+    
+                <div class="pokemon-number">
+                        #<span id="pokemon-number">001</span>
+                </div>
+            </div>
+            <div class="pokemon-sort flex">
+                <div>
+                    <span class="bg-text" id="pokemon-type">Fire</span>
+                </div>
+                <div>
+                    <span class="bg-text" id="pokemon-sort">Flying</span>
+                </div>
+            </div>
+            
+    
+        </div>
+        <div class="info-container">
+            <img id="pokemonImage" class="pokemonImage">
+    
+            <div id="pokemon-info-head" class="pokemon-info-head flex">
+                <div onclick="showAbout()" class="info-border-style color-gray">
+                    About
+                </div>
+                <div onclick="showBaseStats(i)" class=" baseStats color-gray">
+                    Base Stats
+                </div>
+                
+            </div>
+            <div>
+                <table id="table-overflow" class="table-overflow">
+                    <tr>
+                        <td>Height</td>
+                        <td id="height">60 cm</td>
+                    </tr>
+                    <tr>
+                        <td>Weight</td>
+                        <td id="weight">8.5 kg</td>
+                    </tr>
+                    <tr>
+                        <td>Abilities</td>
+                        <td id="abilities">Blaze,solar-Power</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</body>
+
+</html>
