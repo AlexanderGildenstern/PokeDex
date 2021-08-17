@@ -28,6 +28,10 @@
         </div>
         <div class="all-pokemon-container" id="all-pokemon-container">
         </div>
+        <div class="loadMoreDiv">
+            <button onclick="loadMoreCards()" id="loadMoreButton">Mehr Laden</button>
+        </div>
+        
     </div>
 
     <div id="overlay" class="overlay d-none">
@@ -36,13 +40,13 @@
                 <div class="button-back">
                     <img onclick="closeOverlay()" src="img/left-arrow.png">
                 </div>
-    
+
                 <div id="pokemon">
                     <h1 id="pokemonName">Name</h1>
                 </div>
-    
+
                 <div class="pokemon-number">
-                        #<span id="pokemon-number">001</span>
+                    #<span id="pokemon-number">001</span>
                 </div>
             </div>
             <div class="pokemon-sort flex">
@@ -53,12 +57,12 @@
                     <span class="bg-text" id="pokemon-sort">Flying</span>
                 </div>
             </div>
-            
-    
+
+
         </div>
         <div class="info-container">
             <img id="pokemonImage" class="pokemonImage">
-    
+
             <div id="pokemon-info-head" class="pokemon-info-head flex">
                 <div onclick="showAbout()" class="info-border-style color-gray">
                     About
@@ -66,7 +70,7 @@
                 <div onclick="showBaseStats(i)" class=" baseStats color-gray">
                     Base Stats
                 </div>
-                
+
             </div>
             <div>
                 <table id="table-overflow" class="table-overflow">
@@ -85,7 +89,7 @@
                 </table>
             </div>
         </div>
-        
+
     </div>
 </body>
 

@@ -1,167 +1,327 @@
+let allPokemons = [];       // JSON Array of Pokemons
+let currentColorBg;         // background for pokemon cards
+let amountPokemons;         // amount of pokemon
+let loadActuallyCards = 0;
 
-let allPokemons = [];
-let currentColorBg;
-let amountPokemons;
 
-
+/**
+ * init
+ */
 function init() {
-    loadPokemonAmount();
+    loadMoreCards();
 }
 
-/*
-    Load the pokemons amount of the first generation
-*/ 
+/**
+ * show 20 more cards
+ */
+function loadMoreCards() {
+    loadActuallyCards += 20;
+    loadPokemonAmount(loadActuallyCards);
+}
 
-async function loadPokemonAmount() {
+/**
+ * Load the pokemons amount of the first generation
+ * @param {number} loadActuallyCards
+ */
+async function loadPokemonAmount(loadActuallyCards) {
     let url = `https://pokeapi.co/api/v2/generation/1/`;
     let response = await fetch(url);
     let responseAsJson = await response.json();
     generation1_Pokemons = responseAsJson;  // amount Pokemons of generation 1
-    amountPokemons = generation1_Pokemons["pokemon_species"].length
-    console.log('Loaded pokemon', generation1_Pokemons);
-    loadAllPokemons(amountPokemons);  // start function with pokemon amounts
+    amountPokemons = generation1_Pokemons["pokemon_species"].length;
+    loadAllPokemons(loadActuallyCards);
+
 }
 
-/*
-    safe all Pokemons in a Array
-*/
+/**
+ * safe all Pokemons in a Array
+ * @param {number} loadActuallyCards
+ */
+async function loadAllPokemons(loadActuallyCards) {
+    let x = 0;
 
-async function loadAllPokemons(amountPokemons) {
-
-    for (let i = 0; i < amountPokemons; i++) {
+    if (loadActuallyCards > 19) {
+        x = loadActuallyCards - 20;
+    }
+    if (loadActuallyCards > amountPokemons) {
+        loadActuallyCards = amountPokemons;
+    }
+    for (let i = x; i < loadActuallyCards; i++) {
         let url = ` https://pokeapi.co/api/v2/pokemon/${i + 1}`;
         let response = await fetch(url);
         let responseAsJson = await response.json();
         allPokemons[i] = responseAsJson;
     }
-    renderPokemonCards(amountPokemons);
+    renderPokemonCards(loadActuallyCards, x);
 }
 
+/**
+ * Show Pokemoncards
+ * @param {number} loadActuallyCards
+ * @param {number} x 
+ */
+function renderPokemonCards(loadActuallyCards, x) {
+    for (i = x; i < loadActuallyCards; i++) {
+        document.getElementById('all-pokemon-container').innerHTML += generatePokemonCardsHtml(i);
+        showNumber(i);
+        showName(i);
+        showImage(i);
+        showTypes(i);
+    }
+}
+
+/**
+ * Generate Html code of Pokemon Cards
+ * @param {number} i 
+ * @returns 
+ */
+function generatePokemonCardsHtml(i) {
+    return `
+    <div id="card${i}" class="card" onclick="showOverlay(${i})">
+        <div class="card-row-left">
+            <h2 class="card-title" id="card-title${i}"></h2>
+            <div>
+                <div class="card-element card-text " id="card-element${i}">
+                </div>
+                <div class="card-type card-text" id="card-type${i}">
+                </div>
+            </div>
+        </div>
+        <div class="card-row-right">
+            <div class="card-number">
+                <div>
+                    #<span id="card-number${i}"></span>
+                </div>
+            </div>
+            <div class="card-img">
+                <img id="card-image${i}" src="">
+            </div>
+        </div>
+    </div>
+`;
+}
+
+/**
+ * Show the number of the Pokemon
+ * @param {number} i 
+ */
+function showNumber(i) {
+    let pokemonNumber = i + 1;
+    if (i < 9) {
+        pokemonNumber = `0${pokemonNumber}`;
+    }
+    if (i < 99) {
+        pokemonNumber = `0${pokemonNumber}`;
+    }
+    document.getElementById("pokemon-number").innerHTML = pokemonNumber;
+    document.getElementById(`card-number${i}`).innerHTML = pokemonNumber;
+}
+
+/**
+ * Show the name of the Pokemon
+ * @param {number} i 
+ */
+function showName(i) {
+    let pokemonName = allPokemons[i]["name"];
+    document.getElementById(`card-title${i}`).innerHTML = pokemonName;
+    document.getElementById(`pokemonName`).innerHTML = pokemonName;
+}
+
+/**
+ * Show the image in the main and in singel cards
+ * @param {number} i 
+ */
+function showImage(i) {
+    let pokemonImage = allPokemons[i]["sprites"]["other"]["dream_world"]["front_default"];
+    document.getElementById(`card-image${i}`).src = pokemonImage;
+    document.getElementById(`pokemonImage`).src = pokemonImage;
+}
+
+/**
+ * show the types in main and single cards
+ * @param {number} i 
+ */
+function showTypes(i) {
+    let type1 = allPokemons[i]["types"][0]["type"]["name"];
+    let type2 = allPokemons[i]["types"].length;
+
+    document.getElementById(`card-element${i}`).innerHTML = type1;
+    document.getElementById(`pokemon-type`).innerHTML = type1;
+
+    document.getElementById(`card-type${i}`).innerHTML = type2;
+    document.getElementById(`pokemon-sort`).innerHTML = type2;
+
+    currentColorBg = `type-${type1}`;
+    document.getElementById(`card${i}`).classList.add(currentColorBg);
+    removeType2(type1, type2, i);
+}
+
+/**
+ * show singel cards
+ * @param {number} i 
+ */
 function showOverlay(i) {
     document.getElementById('overlay').classList.remove('d-none');
-    document.getElementById('overlay').innerHTML=`
-
-        <div id="pokemon-background" class="pokemon-background">
-            <div class="pokemon-header">
-                <div class="button-back">
-                    <img onclick="closeOverlay()" src="img/left-arrow.png">
-                </div>
-    
-                <div id="pokemon">
-                    <h1 id="pokemonName">Name</h1>
-                </div>
-    
-                <div class="pokemon-number">
-                        #<span id="pokemon-number">001</span>
-                </div>
-            </div>
-            <div class="pokemon-sort flex">
-                <div>
-                    <span class="bg-text" id="pokemon-type">Fire</span>
-                </div>
-                <div>
-                    <span class="bg-text" id="pokemon-sort">Flying</span>
-                </div>
-            </div>
-            
-    
-        </div>
-        <div class="info-container">
-            <img id="pokemonImage" class="pokemonImage">
-    
-            <div id="pokemon-info-head" class="pokemon-info-head flex">
-                <div onclick="showAbout(${i})" id="about" class="redBorderLine ">
-                    About
-                </div>
-                <div id="baseStats" onclick="showBaseStats(${i})" class=" baseStats color-gray">
-                    Base Stats
-                </div>
-                
-            </div>
-            <div>
-                <table id="table-overflow${i}" class="table-overflow">
-                    <tr>
-                        <td>Height</td>
-                        <td id="height">60 cm</td>
-                    </tr>
-                    <tr>
-                        <td>Weight</td>
-                        <td id="weight">8.5 kg</td>
-                    </tr>
-                    <tr>
-                        <td>Abilities</td>
-                        <td id="abilities">Blaze,solar-Power</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    `;
+    document.getElementById('overlay').innerHTML = generateSingelCardsHtml(i);
     showNumber(i);
     showName(i);
     showImage(i);
     showTypes(i);
     showAboutPokemon(i);
     showBgcolor(i);
-    
 }
-function showBaseStats(i){
+
+/**
+ * Generate Html of singel cards
+ * @param {number} i 
+ * @returns 
+ */
+function generateSingelCardsHtml(i) {
+    return `        
+    <div id="pokemon-background" class="pokemon-background">
+        <div class="pokemon-header">
+            <div class="button-back">
+                <img onclick="closeOverlay()" src="img/left-arrow.png">
+            </div>
+            <div id="pokemon">
+                <h1 id="pokemonName">Name</h1>
+            </div>
+
+            <div class="pokemon-number">
+                    #<span id="pokemon-number">001</span>
+            </div>
+        </div>
+        <div class="pokemon-sort flex">
+            <div>
+                <span class="bg-text" id="pokemon-type">Fire</span>
+            </div>
+            <div>
+                <span class="bg-text" id="pokemon-sort">Flying</span>
+            </div>
+        </div>
+    </div>
+    <div class="info-container">
+        <img id="pokemonImage" class="pokemonImage">
+        <div id="pokemon-info-head" class="pokemon-info-head flex">
+            <div onclick="showAbout(${i})" id="about" class="redBorderLine ">
+                About
+            </div>
+            <div id="baseStats" onclick="showBaseStats(${i})" class=" baseStats color-gray">
+                Base Stats
+            </div>
+        </div>
+        <div>
+            <table id="table-overflow${i}" class="table-overflow">
+                <tr>
+                    <td>Height</td>
+                    <td id="height">60 cm</td>
+                </tr>
+                <tr>
+                    <td>Weight</td>
+                    <td id="weight">8.5 kg</td>
+                </tr>
+                <tr>
+                    <td>Abilities</td>
+                    <td id="abilities">Blaze,solar-Power</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+`;
+}
+
+/**
+ *  show Base Stats of single pokemon cards
+ * @param {number} i 
+ */
+function showBaseStats(i) {
     document.getElementById('baseStats').classList.add('redBorderLine');
     document.getElementById('about').classList.remove('redBorderLine');
     document.getElementById('baseStats').classList.remove('color-gray');
     document.getElementById('about').classList.add('color-gray');
-
+    chooseCurrentColor(i);
+    document.getElementById('pokemon-background').style.height = '750px';
+}
+function chooseCurrentColor(i) {
     let hp = allPokemons[i]["stats"][0]["base_stat"];
-    if(hp>50){
+    let attack = allPokemons[i]["stats"][1]["base_stat"];
+    let defense = allPokemons[i]["stats"][2]["base_stat"];
+    let spAtk = allPokemons[i]["stats"][3]["base_stat"];
+    let spDef = allPokemons[i]["stats"][4]["base_stat"];
+    let speed = allPokemons[i]["stats"][5]["base_stat"];
+    let total = hp + attack + defense + spAtk + spDef + speed;
+    let totalWitdh = total / 6;
+
+    if (hp > 50) {
         hpColor = '#5bc686';
     }
-    if(hp<50){
+    else {
         hpColor = '#fb7171';
     }
-    let attack = allPokemons[i]["stats"][1]["base_stat"];
-    if(attack>50){
-         attackColor = '#5bc686';
+
+    if (attack > 50) {
+        attackColor = '#5bc686';
     }
-    if(hp<50){
+    else {
         attackColor = '#fb7171';
     }
-    let defense = allPokemons[i]["stats"][2]["base_stat"];
-    if(defense>50){
+
+    if (defense > 50) {
         defenseColor = '#5bc686';
     }
-    if(defense<50){
+    else {
         defenseColor = '#fb7171';
     }
-    let spAtk = allPokemons[i]["stats"][3]["base_stat"];
-    if(spAtk>50){
+
+    if (spAtk > 50) {
         spAtkColor = '#5bc686';
     }
-    if(spAtk<50){
+    else {
         spAtkColor = '#fb7171';
     }
-    let spDef = allPokemons[i]["stats"][4]["base_stat"];
-    if(spDef>50){
+
+    if (spDef > 50) {
         spDefColor = '#5bc686';
     }
-    if(spDef<50){
+    else {
         spDefColor = '#fb7171';
     }
-    let speed = allPokemons[i]["stats"][5]["base_stat"];
-    if(speed>50){
+
+    if (speed > 50) {
         speedColor = '#5bc686';
     }
-    if(speed<50){
+    else {
         speedColor = '#fb7171';
     }
-    let total = hp + attack + defense + spAtk + spDef + speed;
-    let totalWitdh = total/6;
-    if(totalWitdh>'50'){
+    if (totalWitdh > '50') {
         totalColor = '#5bc686';
     }
-    if(totalWitdh<'50'){
+    else {
         totalColor = '#fb7171';
     }
-
-    document.getElementById(`table-overflow${i}`).innerHTML =`
+    document.getElementById(`table-overflow${i}`).innerHTML = generateBaseStatsHtml(hp, attack, defense, spAtk, spDef, speed, total, totalWitdh, hpColor, attackColor, defenseColor, spAtkColor, spDefColor, speedColor, totalColor);
+}
+/**
+ * Generate Html code for BaseStats linies
+ * @param {number} hp 
+ * @param {number} attack 
+ * @param {number} defense 
+ * @param {number} spAtk 
+ * @param {number} spDef 
+ * @param {number} speed 
+ * @param {number} total 
+ * @param {number} totalWitdh 
+ * @param {number} hpColor 
+ * @param {number} attackColor 
+ * @param {number} defenseColor 
+ * @param {number} spAtkColor 
+ * @param {number} spDefColor 
+ * @param {number} speedColor 
+ * @param {number} totalColor 
+ * @returns 
+ */
+function generateBaseStatsHtml(hp, attack, defense, spAtk, spDef, speed, total, totalWitdh, hpColor, attackColor, defenseColor, spAtkColor, spDefColor, speedColor, totalColor) {
+    return `
     <tr>
         <td>HP</td>
         <td id="hp" class="hp">${hp}
@@ -219,115 +379,53 @@ function showBaseStats(i){
         </td>
     </tr>
     `;
-    document.getElementById('pokemon-background').style.height='750px';
 }
-function showBgcolor(){
+/**
+ * Show the right background-color of a Pokemon
+ */
+function showBgcolor() {
     document.getElementById(`pokemon-background`).classList.add(currentColorBg);
 }
-function showAboutPokemon(i){
+
+/**
+ * Show the point about in single cards
+ * @param {number} i 
+ */
+function showAboutPokemon(i) {
     let height = allPokemons[i]["height"];
     let weight = allPokemons[i]["weight"];
-
     document.getElementById("height").innerHTML = height + " cm";
     document.getElementById("weight").innerHTML = weight + " kg";
-    document.getElementById("abilities").innerHTML='';
+    document.getElementById("abilities").innerHTML = '';
 
-    for( let j=0 ; j < allPokemons[i]["abilities"]["length"] ; j++ ){
+    for (let j = 0; j < allPokemons[i]["abilities"]["length"]; j++) {
 
         let abilities = allPokemons[i]["abilities"][j]["ability"]["name"];
-        if(j==0){
+        if (j == 0) {
             document.getElementById("abilities").innerHTML += `${abilities}`;
         }
-        else{
+        else {
             document.getElementById("abilities").innerHTML += `, ${abilities}`;
         }
     }
 }
 
-function showTypes(i){
-        let type1 = allPokemons[i]["types"][0]["type"]["name"];
-        let type2 = allPokemons[i]["types"].length;
-        
-        document.getElementById(`card-element${i}`).innerHTML=type1;
-        document.getElementById(`pokemon-type`).innerHTML=type1;
-        
-        document.getElementById(`card-type${i}`).innerHTML=type2;
-        document.getElementById(`pokemon-sort`).innerHTML=type2;
-
-        currentColorBg = `type-${type1}`;
-        document.getElementById(`card${i}`).classList.add(currentColorBg);
-        
-        
-        removeType2(type1, type2, i);
-}
-
-function showImage(i){
-    let pokemonImage = allPokemons[i]["sprites"]["other"]["dream_world"]["front_default"];
-    document.getElementById(`card-image${i}`).src=pokemonImage;
-    document.getElementById(`pokemonImage`).src=pokemonImage;
-}
-function showName(i){
-    let pokemonName = allPokemons[i]["name"];
-    document.getElementById(`card-title${i}`).innerHTML=pokemonName;
-    document.getElementById(`pokemonName`).innerHTML=pokemonName;
-}
-
-function showNumber(i){
-    let pokemonNumber = i+1;
-    if (i < 9) {
-        pokemonNumber = `0${pokemonNumber}`;
-    }
-    if (i < 99) {
-        pokemonNumber = `0${pokemonNumber}`;
-    }
-    document.getElementById("pokemon-number").innerHTML= pokemonNumber;
-    document.getElementById(`card-number${i}`).innerHTML= pokemonNumber;
-}
-
+/**
+ * Close Overlay of single Pokemon
+ * 
+ */
 function closeOverlay() {
     document.getElementById(`pokemon-background`).classList.remove(currentColorBg);
     document.getElementById('overlay').classList.add('d-none');
 }
 
-function renderPokemonCards(amountPokemons) {
-
-    for (let i = 0; i < amountPokemons; i++) {
-
-        document.getElementById('all-pokemon-container').innerHTML += `
-
-            <div id="card${i}" class="card" onclick="showOverlay(${i})">
-                <div class="card-row-left">
-                    <h2 class="card-title" id="card-title${i}"></h2>
-                    <div>
-                        <div class="card-element card-text " id="card-element${i}">
-                        </div>
-                        <div class="card-type card-text" id="card-type${i}">
-                        </div>
-                    </div>
-                </div>
-                <div class="card-row-right">
-                    <div class="card-number">
-                        <div>
-                            #<span id="card-number${i}"></span>
-                        </div>
-                    </div>
-                    <div class="card-img">
-                        <img id="card-image${i}" src="">
-                    </div>
-                </div>
-            </div>
-        `;
-        showNumber(i);
-        showName(i);
-        showImage(i);
-        showTypes(i);
-    }
-}
-/*
-    Clear field of type 2 (poisen,flying ...) if is not exist
-*/
+/**
+ * Clear field of type 2 (poisen,flying ...) if is not exist
+ * @param {Text} type1 
+ * @param {Text} type2 
+ * @param {number} i 
+ */
 function removeType2(type1, type2, i) {
-
     if (type2 == 1) {
         type2 = '';
         document.getElementById("card-type" + i).classList.add("d-none");
@@ -341,9 +439,13 @@ function removeType2(type1, type2, i) {
     }
     loadSpecialBgColor(type1, type2, i);
 }
-/*
-    Load background-Color for special Pokemon
-*/
+
+/**
+ * Load background-Color for special Pokemon
+ * @param {Text} type1 
+ * @param {Text} type2 
+ * @param {number} i 
+ */
 function loadSpecialBgColor(type1, type2, i) {
 
     if (type1 == "normal" && type2 == "flying") {
@@ -361,12 +463,30 @@ function loadSpecialBgColor(type1, type2, i) {
     if (type1 == "ground" && type2 == "rock") {
         document.getElementById("card" + i).classList.add("type-rock");
         currentColorBg = `type-rock`;
-    }   
+    }
 }
 
-function showAbout(i){
+/**
+ * Show about of singel Pokemon
+ * @param {number} i 
+ */
+function showAbout(i) {
+    document.getElementById(`table-overflow${i}`).innerHTML = generateShowAboutHtml(i);
+    showAboutPokemon(i);
+    document.getElementById('baseStats').classList.remove('redBorderLine');
+    document.getElementById('about').classList.add('redBorderLine');
+    document.getElementById('baseStats').classList.add('color-gray');
+    document.getElementById('about').classList.remove('color-gray');
+    document.getElementById('pokemon-background').style.height = '550px';
+}
 
-    document.getElementById(`table-overflow${i}`).innerHTML=`
+/**
+ * Generate about Html code
+ * @param {number} i 
+ * @returns 
+ */
+function generateShowAboutHtml(i) {
+    return `
     <tr>
         <td>Height</td>
         <td id="height">60 cm</td>
@@ -380,18 +500,11 @@ function showAbout(i){
         <td id="abilities">Blaze,solar-Power</td>
     </tr>
     `;
-    showAboutPokemon(i);
-    document.getElementById('baseStats').classList.remove('redBorderLine');
-    document.getElementById('about').classList.add('redBorderLine');
-    document.getElementById('baseStats').classList.add('color-gray');
-    document.getElementById('about').classList.remove('color-gray');
-    document.getElementById('pokemon-background').style.height='550px';
 }
 
-/*
-    search for Pokemon and render in the main
-*/
-
+/**
+ * search for Pokemon and render in the main
+ */
 function filterPokemons() {
     let search = document.getElementById('search-box').value;
     search = search.toLowerCase();
@@ -403,34 +516,11 @@ function filterPokemons() {
         const name = allPokemons[i]["name"];
 
         if (name.toLowerCase().includes(search)) {
-            list.innerHTML += `
-    
-            <div id="card${i}" class="card" onclick="showOverlay(${i})">
-                <div class="card-row-left">
-                    <h2 class="card-title" id="card-title${i}"></h2>
-                    <div>
-                        <div class="card-element card-text " id="card-element${i}">
-                        </div>
-                        <div class="card-type card-text" id="card-type${i}">
-                        </div>
-                    </div>
-                </div>
-                <div class="card-row-right">
-                    <div class="card-number">
-                        <div>
-                            #<span id="card-number${i}"></span>
-                        </div>
-                    </div>
-                    <div class="card-img">
-                        <img id="card-image${i}" src="">
-                    </div>
-                </div>
-            </div>
-        `;
-        showNumber(i);
-        showName(i);
-        showImage(i);
-        showTypes(i);
+            list.innerHTML += generatePokemonCardsHtml(i);
+            showNumber(i);
+            showName(i);
+            showImage(i);
+            showTypes(i);
         }
     }
 }

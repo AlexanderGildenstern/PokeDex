@@ -19,7 +19,7 @@ body {
     color: rgba(0, 0, 0, .2);
 }
 
-.redBorderLine{
+.redBorderLine {
     height: 30px;
     border-bottom: 2px solid rgb(253 108 108);
 }
@@ -64,12 +64,15 @@ body {
     width: 40px;
     cursor: pointer;
 }
-.button-back{
+
+.button-back {
     width: 33%;
 }
-#pokemon{
+
+#pokemon {
     width: 33%;
 }
+
 .pokemon-number {
     font-size: 32px;
     color: hsla(0, 0%, 100%, .2);
@@ -128,11 +131,12 @@ body {
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    
 }
-.pokemon-info-head div:hover{
+
+.pokemon-info-head div:hover {
     color: black;
 }
+
 .table-overflow {
     padding-top: 20px;
     width: 100%;
@@ -141,13 +145,15 @@ body {
 .table-overflow tr {
     line-height: 40px;
 }
-table td:first-child{
+
+table td:first-child {
     width: 130px;
 }
 
 tr td:last-child {
     font-weight: 700;
 }
+
 .main-container {
     background-image: url(img/bg-pokemon.jpg);
     height: 100%;
@@ -201,7 +207,6 @@ tr td:last-child {
     padding: 2rem 1rem 2rem 2rem;
     margin: 1rem;
     cursor: pointer;
-    
     display: flex;
     text-transform: capitalize;
     will-change: box-shadow, transform;
@@ -243,39 +248,66 @@ tr td:last-child {
     display: table;
     margin-bottom: 8px;
 }
-#pokemonName{
+
+#pokemonName {
     text-transform: capitalize;
     text-align: center;
 }
-#abilities{
-    text-transform: capitalize;
-}
-#pokemon-type{
-    text-transform: capitalize;
-}
-#pokemon-sort{
+
+#abilities {
     text-transform: capitalize;
 }
 
-.hp, .attack, .defense, .spAtk, .spDef, .speed, .total{
+#pokemon-type {
+    text-transform: capitalize;
+}
+
+#pokemon-sort {
+    text-transform: capitalize;
+}
+
+.hp, .attack, .defense, .spAtk, .spDef, .speed, .total {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.range-view{
+
+.range-view {
     width: 90%;
-    background-color: rgba( 0,0,0,.1 );
+    background-color: rgba( 0, 0, 0, .1);
     border-radius: 100rem;
     overflow: hidden;
     height: 5px;
 }
-.baseStatsLine{
+
+.baseStatsLine {
     display: block;
     height: 5px;
     position: relative;
     border-radius: inherit;
     animation: fill .3s forwards;
 }
+.loadMoreDiv{
+    display: flex;
+    justify-content: center;
+}
+.loadMoreDiv button{
+    padding: 15px 40px;
+    margin: 50px;
+    font-size: 20px;
+    border: 2px solid #444;
+    box-shadow: 0 0 20px 0;
+    border-radius: 10px;
+    background-color: #eb524d;
+    color: #444;
+    will-change: box-shadow, transform;
+    transition: all .3s;
+}
+.loadMoreDiv button:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px 5px;
+}
+
 /*
     Pokemon type colors
 */
@@ -350,4 +382,46 @@ tr td:last-child {
 
 .type-dragon {
     background-color: #F9BE00;
+}
+
+@media(max-width:1000px){
+    .card img{
+        height: 100px;
+        width: 100px;
+    }
+    .pokemonImage{
+        height: 130px;
+        margin-top: -140px;
+    }
+    #pokemonName{
+        font-size: 24px;
+    }
+    .pokemon-number{
+        font-size: 24px;
+    }
+    .pokemon-header img {
+        height: 30px;
+        width: 30px;
+    }
+    .pokemon-header img {
+    height: 30px;
+    width: 30px;
+    }
+    .pokemon-background{
+        min-width: 300px!important;
+        
+        max-height: 650px!important;
+        bottom: 1vh;
+    }
+    .info-container{
+        width:none;
+        min-width: 300px!important;
+        bottom: 1vh;
+    }
+    table td:first-child {
+        width: 90px;
+    }
+    .range-view {
+        width: 80%;
+    }
 }
