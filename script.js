@@ -5,14 +5,28 @@ let loadActuallyCards = 0;
 
 
 /**
- * init
+ * initialize the Website
+ * 
  */
 function init() {
     loadMoreCards();
 }
 
+/* optional
+window.onscroll = function() {
+            if(window.scrollY > 200) {
+                // Lade 20 weitere pokeom
+            } 
+
+            if(window.scrollY > 400) {
+                // Lade 20 weitere pokeom
+            }       
+          }
+*/
+
 /**
- * show 20 more cards
+ * show 20 more Pokemon cards
+ * 
  */
 function loadMoreCards() {
     loadActuallyCards += 20;
@@ -21,21 +35,22 @@ function loadMoreCards() {
 
 /**
  * Load the pokemons amount of the first generation
- * @param {number} loadActuallyCards
+ * 
+ * @param {number} loadActuallyCards - Actually Pokemon cards
  */
 async function loadPokemonAmount(loadActuallyCards) {
-    let url = `https://pokeapi.co/api/v2/generation/1/`;
+    let url = 'https://pokeapi.co/api/v2/generation/1/';
     let response = await fetch(url);
     let responseAsJson = await response.json();
     generation1_Pokemons = responseAsJson;  // amount Pokemons of generation 1
-    amountPokemons = generation1_Pokemons["pokemon_species"].length;
+    amountPokemons = generation1_Pokemons['pokemon_species'].length;
     loadAllPokemons(loadActuallyCards);
-
 }
 
 /**
  * safe all Pokemons in a Array
- * @param {number} loadActuallyCards
+ * 
+ * @param {number} loadActuallyCards - Actually Pokemon cards
  */
 async function loadAllPokemons(loadActuallyCards) {
     let x = 0;
@@ -47,7 +62,7 @@ async function loadAllPokemons(loadActuallyCards) {
         loadActuallyCards = amountPokemons;
     }
     for (let i = x; i < loadActuallyCards; i++) {
-        let url = ` https://pokeapi.co/api/v2/pokemon/${i + 1}`;
+        let url = `https://pokeapi.co/api/v2/pokemon/${i + 1}`;
         let response = await fetch(url);
         let responseAsJson = await response.json();
         allPokemons[i] = responseAsJson;
@@ -56,9 +71,10 @@ async function loadAllPokemons(loadActuallyCards) {
 }
 
 /**
- * Show Pokemoncards
- * @param {number} loadActuallyCards
- * @param {number} x 
+ * Show Pokemoncards in the main
+ * 
+ * @param {number} loadActuallyCards - Actually Pokemon cards
+ * @param {number} x - start at number of x
  */
 function renderPokemonCards(loadActuallyCards, x) {
     for (i = x; i < loadActuallyCards; i++) {
@@ -72,7 +88,8 @@ function renderPokemonCards(loadActuallyCards, x) {
 
 /**
  * Generate Html code of Pokemon Cards
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  * @returns 
  */
 function generatePokemonCardsHtml(i) {
@@ -103,7 +120,8 @@ function generatePokemonCardsHtml(i) {
 
 /**
  * Show the number of the Pokemon
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  */
 function showNumber(i) {
     let pokemonNumber = i + 1;
@@ -113,43 +131,46 @@ function showNumber(i) {
     if (i < 99) {
         pokemonNumber = `0${pokemonNumber}`;
     }
-    document.getElementById("pokemon-number").innerHTML = pokemonNumber;
+    document.getElementById('pokemon-number').innerHTML = pokemonNumber;
     document.getElementById(`card-number${i}`).innerHTML = pokemonNumber;
 }
 
 /**
  * Show the name of the Pokemon
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  */
 function showName(i) {
-    let pokemonName = allPokemons[i]["name"];
+    let pokemonName = allPokemons[i]['name'];
     document.getElementById(`card-title${i}`).innerHTML = pokemonName;
-    document.getElementById(`pokemonName`).innerHTML = pokemonName;
+    document.getElementById('pokemonName').innerHTML = pokemonName;
 }
 
 /**
  * Show the image in the main and in singel cards
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  */
 function showImage(i) {
-    let pokemonImage = allPokemons[i]["sprites"]["other"]["dream_world"]["front_default"];
+    let pokemonImage = allPokemons[i]['sprites']['other']['dream_world']['front_default'];
     document.getElementById(`card-image${i}`).src = pokemonImage;
-    document.getElementById(`pokemonImage`).src = pokemonImage;
+    document.getElementById('pokemonImage').src = pokemonImage;
 }
 
 /**
  * show the types in main and single cards
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  */
 function showTypes(i) {
-    let type1 = allPokemons[i]["types"][0]["type"]["name"];
-    let type2 = allPokemons[i]["types"].length;
+    let type1 = allPokemons[i]['types'][0]['type']['name'];
+    let type2 = allPokemons[i]['types'].length;
 
     document.getElementById(`card-element${i}`).innerHTML = type1;
-    document.getElementById(`pokemon-type`).innerHTML = type1;
+    document.getElementById('pokemon-type').innerHTML = type1;
 
     document.getElementById(`card-type${i}`).innerHTML = type2;
-    document.getElementById(`pokemon-sort`).innerHTML = type2;
+    document.getElementById('pokemon-sort').innerHTML = type2;
 
     currentColorBg = `type-${type1}`;
     document.getElementById(`card${i}`).classList.add(currentColorBg);
@@ -158,7 +179,8 @@ function showTypes(i) {
 
 /**
  * show singel cards
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  */
 function showOverlay(i) {
     document.getElementById('overlay').classList.remove('d-none');
@@ -173,7 +195,8 @@ function showOverlay(i) {
 
 /**
  * Generate Html of singel cards
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  * @returns 
  */
 function generateSingelCardsHtml(i) {
@@ -232,7 +255,8 @@ function generateSingelCardsHtml(i) {
 
 /**
  *  show Base Stats of single pokemon cards
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  */
 function showBaseStats(i) {
     document.getElementById('baseStats').classList.add('redBorderLine');
@@ -242,13 +266,18 @@ function showBaseStats(i) {
     chooseCurrentColor(i);
     document.getElementById('pokemon-background').style.height = '750px';
 }
+/**
+ * Choose the right background-color of the Pokemon
+ * 
+ * @param {number} i - Number of position
+ */
 function chooseCurrentColor(i) {
-    let hp = allPokemons[i]["stats"][0]["base_stat"];
-    let attack = allPokemons[i]["stats"][1]["base_stat"];
-    let defense = allPokemons[i]["stats"][2]["base_stat"];
-    let spAtk = allPokemons[i]["stats"][3]["base_stat"];
-    let spDef = allPokemons[i]["stats"][4]["base_stat"];
-    let speed = allPokemons[i]["stats"][5]["base_stat"];
+    let hp = allPokemons[i]['stats'][0]['base_stat'];
+    let attack = allPokemons[i]['stats'][1]['base_stat'];
+    let defense = allPokemons[i]['stats'][2]['base_stat'];
+    let spAtk = allPokemons[i]['stats'][3]['base_stat'];
+    let spDef = allPokemons[i]['stats'][4]['base_stat'];
+    let speed = allPokemons[i]['stats'][5]['base_stat'];
     let total = hp + attack + defense + spAtk + spDef + speed;
     let totalWitdh = total / 6;
 
@@ -303,21 +332,22 @@ function chooseCurrentColor(i) {
 }
 /**
  * Generate Html code for BaseStats linies
- * @param {number} hp 
- * @param {number} attack 
- * @param {number} defense 
- * @param {number} spAtk 
- * @param {number} spDef 
- * @param {number} speed 
- * @param {number} total 
- * @param {number} totalWitdh 
- * @param {number} hpColor 
- * @param {number} attackColor 
- * @param {number} defenseColor 
- * @param {number} spAtkColor 
- * @param {number} spDefColor 
- * @param {number} speedColor 
- * @param {number} totalColor 
+ * 
+ * @param {number} hp - Number for hp scale width
+ * @param {number} attack - Number for attack scale width
+ * @param {number} defense - Number for defense scale width
+ * @param {number} spAtk - Number for spAtk scale width
+ * @param {number} spDef - Number for spDef scale width
+ * @param {number} speed - Number for speed scale width
+ * @param {number} total - Number for total scale width
+ * @param {number} totalWitdh - Number for totalWidth scale width
+ * @param {string} hpColor - Color of the scale line
+ * @param {string} attackColor - Color of the scale line
+ * @param {string} defenseColor - Color of the scale line
+ * @param {string} spAtkColor - Color of the scale line
+ * @param {string} spDefColor - Color of the scale line
+ * @param {string} speedColor - Color of the scale line
+ * @param {string} totalColor - Color of the scale line
  * @returns 
  */
 function generateBaseStatsHtml(hp, attack, defense, spAtk, spDef, speed, total, totalWitdh, hpColor, attackColor, defenseColor, spAtkColor, spDefColor, speedColor, totalColor) {
@@ -382,30 +412,32 @@ function generateBaseStatsHtml(hp, attack, defense, spAtk, spDef, speed, total, 
 }
 /**
  * Show the right background-color of a Pokemon
+ * 
  */
 function showBgcolor() {
-    document.getElementById(`pokemon-background`).classList.add(currentColorBg);
+    document.getElementById('pokemon-background').classList.add(currentColorBg);
 }
 
 /**
  * Show the point about in single cards
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  */
 function showAboutPokemon(i) {
-    let height = allPokemons[i]["height"];
-    let weight = allPokemons[i]["weight"];
-    document.getElementById("height").innerHTML = height + " cm";
-    document.getElementById("weight").innerHTML = weight + " kg";
-    document.getElementById("abilities").innerHTML = '';
+    let height = allPokemons[i]['height'];
+    let weight = allPokemons[i]['weight'];
+    document.getElementById('height').innerHTML = height + ' cm';
+    document.getElementById('weight').innerHTML = weight + ' kg';
+    document.getElementById('abilities').innerHTML = '';
 
-    for (let j = 0; j < allPokemons[i]["abilities"]["length"]; j++) {
+    for (let j = 0; j < allPokemons[i]['abilities']['length']; j++) {
 
-        let abilities = allPokemons[i]["abilities"][j]["ability"]["name"];
+        let abilities = allPokemons[i]['abilities'][j]['ability']['name'];
         if (j == 0) {
-            document.getElementById("abilities").innerHTML += `${abilities}`;
+            document.getElementById('abilities').innerHTML += `${abilities}`;
         }
         else {
-            document.getElementById("abilities").innerHTML += `, ${abilities}`;
+            document.getElementById('abilities').innerHTML += `, ${abilities}`;
         }
     }
 }
@@ -415,60 +447,67 @@ function showAboutPokemon(i) {
  * 
  */
 function closeOverlay() {
-    document.getElementById(`pokemon-background`).classList.remove(currentColorBg);
+    document.getElementById('pokemon-background').classList.remove(currentColorBg);
     document.getElementById('overlay').classList.add('d-none');
 }
 
 /**
  * Clear field of type 2 (poisen,flying ...) if is not exist
- * @param {Text} type1 
- * @param {Text} type2 
- * @param {number} i 
+ * 
+ * @param {string} type1 
+ * @param {string} type2 
+ * @param {number} i - Number of position
  */
 function removeType2(type1, type2, i) {
+    let cardType = document.getElementById('card-type' + i);
+    let pokemonSort = document.getElementById('pokemon-sort');
+    
     if (type2 == 1) {
         type2 = '';
-        document.getElementById("card-type" + i).classList.add("d-none");
-        document.getElementById("pokemon-sort").classList.add("d-none");
+        cardType.classList.add('d-none');
+        pokemonSort.classList.add('d-none');
     }
     if (type2 == 2) {
-        type2 = allPokemons[i]["types"][1]["type"]["name"];
-        document.getElementById('card-type' + i).innerHTML = type2;
-        document.getElementById("pokemon-sort").classList.remove("d-none");
-        document.getElementById('pokemon-sort').innerHTML = type2;
+        type2 = allPokemons[i]['types'][1]['type']['name'];
+        cardType.innerHTML = type2;
+        pokemonSort.classList.remove('d-none');
+        pokemonSort.innerHTML = type2;
     }
     loadSpecialBgColor(type1, type2, i);
 }
 
 /**
  * Load background-Color for special Pokemon
- * @param {Text} type1 
- * @param {Text} type2 
- * @param {number} i 
+ * 
+ * @param {string} type1 - choose the right background-color
+ * @param {string} type2 - choose the right background-color
+ * @param {number} i - Number of position
  */
 function loadSpecialBgColor(type1, type2, i) {
-
-    if (type1 == "normal" && type2 == "flying") {
-        document.getElementById("card" + i).classList.add("type-flying");
-        currentColorBg = `type-flying`;
+    let card = document.getElementById('card' + i);
+    
+    if (type1 == 'normal' && type2 == 'flying') {
+        card.classList.add('type-flying');
+        currentColorBg = 'type-flying';
     }
-    if (type1 == "normal" && type2 == "fairy") {
-        document.getElementById("card" + i).classList.add("type-fairy");
-        currentColorBg = `type-fairy`;
+    if (type1 == 'normal' && type2 == 'fairy') {
+        card.classList.add('type-fairy');
+        currentColorBg = 'type-fairy';
     }
-    if (type1 == "grass" && type2 == "psychic" || type1 == "water" && type2 == "psychic" || type1 == "psychic" && type2 == "fairy") {
-        document.getElementById("card" + i).classList.add("type-psychic");
-        currentColorBg = `type-psychic`;
+    if (type1 == 'grass' && type2 == 'psychic' || type1 == 'water' && type2 == 'psychic' || type1 == 'psychic' && type2 == 'fairy') {
+        card.classList.add('type-psychic');
+        currentColorBg = 'type-psychic';
     }
-    if (type1 == "ground" && type2 == "rock") {
-        document.getElementById("card" + i).classList.add("type-rock");
-        currentColorBg = `type-rock`;
+    if (type1 == 'ground' && type2 == 'rock') {
+        card.classList.add('type-rock');
+        currentColorBg = 'type-rock';
     }
 }
 
 /**
  * Show about of singel Pokemon
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  */
 function showAbout(i) {
     document.getElementById(`table-overflow${i}`).innerHTML = generateShowAboutHtml(i);
@@ -482,7 +521,8 @@ function showAbout(i) {
 
 /**
  * Generate about Html code
- * @param {number} i 
+ * 
+ * @param {number} i - Number of position
  * @returns 
  */
 function generateShowAboutHtml(i) {
@@ -504,16 +544,17 @@ function generateShowAboutHtml(i) {
 
 /**
  * search for Pokemon and render in the main
+ * 
  */
 function filterPokemons() {
     let search = document.getElementById('search-box').value;
     search = search.toLowerCase();
 
     let list = document.getElementById('all-pokemon-container');
-    list.innerHTML = ``;
+    list.innerHTML = '';
 
     for (let i = 0; i < amountPokemons; i++) {
-        const name = allPokemons[i]["name"];
+        const name = allPokemons[i]['name'];
 
         if (name.toLowerCase().includes(search)) {
             list.innerHTML += generatePokemonCardsHtml(i);
